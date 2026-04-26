@@ -58,3 +58,45 @@ def check_winner(player):
     
     return False
 
+def is_draw():
+    for row in board:
+        if "" in row:
+            return False
+    return True
+
+def mark_square(pos):
+    global current_player
+
+    x, y = pos
+    row = y // CELL_SIZE
+    col = x // CELL_SIZE
+
+    if board[row][col] == "":
+        board[row][col] = current_player
+
+        if check_winner(current_player):
+            print(f"{current_player} wins!")
+            return True
+        
+        if is_draw():
+            print("Draw!")
+            return True
+        
+        current_player = "O" if current_player == "X" else "X"
+
+    return False
+
+screen.fill(BG_COLOR)
+draw_lines()
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+        if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+            game_over = mark_square(event.pos)
+
+    draw_figures()
+    pygame.display.update()
